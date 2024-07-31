@@ -1,5 +1,6 @@
 const { BasicSchema, ManagmentSchema, productInfoSchema } = require("./index");
 const sendMail = require("../../system/sendmail/index");
+const passService = require("../ResetPassword/service");
 const { v4: uuidv4 } = require("uuid");
 
 const create = async (params) => {
@@ -38,13 +39,7 @@ const createProduct = async (params, id) => {
       const userEmail = data.key_contact_person.email;
       const secretKey = uuidv4();
       const link = `http://localhost:3000/update_password/?token=${secretKey}`;
-      const basicData = await BasicSchema.findOneAndUpdate(
-        {
-          _id: newData.company_id,
-        },
-        { token: secretKey },
-        { new: true, upsert: true }
-      );
+      await passService.create({ _id: data?._id, secretKey });
       await sendMail(userEmail, link);
       return newData;
     } else {

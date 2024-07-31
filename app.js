@@ -19,16 +19,18 @@ app.use(express.urlencoded({ extended: true }));
 
 const userInfo = require("./api/BasicInfo/route");
 const fileUpload = require("./api/User/route");
+const passwordRoute = require("./api/ResetPassword/route");
 
 //public route
 app.get("/", () => {
   res.send("hello world");
 });
-app.use("/", userInfo);
+app.use("/user", userInfo);
+app.use("/password", passwordRoute);
 
 //private route
 app.use(auth.authenticate);
-app.use("/", fileUpload);
+app.use("/auth", fileUpload);
 
 app.listen(3000, () => {
   console.log("Server Is Running On " + 3000);

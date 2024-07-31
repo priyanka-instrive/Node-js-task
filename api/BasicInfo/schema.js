@@ -42,6 +42,11 @@ module.exports.create = {
         user_image: Joi.any().optional(),
       })
       .required(),
+    password: Joi.string()
+      .min(8)
+      .pattern(
+        new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$')
+      ),
   }),
 
   managementInfo: Joi.object().keys({
