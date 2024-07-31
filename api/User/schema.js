@@ -14,3 +14,26 @@ module.exports.userSchema = Joi.object().keys({
   country: Joi.string().optional(),
   status: Joi.string().optional(),
 });
+
+const schema = Joi.object({
+  limit: Joi.number().required(),
+  page: Joi.number().required(),
+  searchTerm: Joi.string().allow(null, "").optional(),
+  sortBy: Joi.string().allow(null, "").optional(),
+  sortOrder: Joi.string().allow(null, "").optional(),
+}).required();
+
+// Middleware function to validate request
+const validateUserData = (req, res, next) => {
+  const { error } = schema.validate(req.query);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};
+
+// Export the validation middleware
+module.exports = {
+  validateUserData,
+  schema,
+};

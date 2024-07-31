@@ -1,4 +1,3 @@
-const boom = require("@hapi/boom");
 const service = require("./service");
 const xlsx = require("xlsx");
 const User = require("../User/index");
@@ -74,20 +73,21 @@ const uploadExcelFile = async (req, res) => {
 
 async function fetchUserData(req, res) {
   try {
-    let { page = 1, limit = 10, sortBy, sortOrder, searchTerm } = req.query;
+    let { page, limit, sortBy, sortOrder, searchTerm } = req.query;
 
     page = Math.max(parseInt(page, 10) || 1, 1);
     limit = Math.max(parseInt(limit, 10) || 10, 1);
     sortOrder =
       sortOrder && sortOrder.toLowerCase() === "desc" ? "desc" : "asc";
-
-    const data = await service.getData(
+    const data1 = {
       page,
       limit,
       sortBy,
       sortOrder,
-      searchTerm
-    );
+      searchTerm,
+    };
+
+    const data = await service.getData(data1);
 
     if (!data.items || data.items.length === 0) {
       return res.status(404).json({ message: "Data not found" });

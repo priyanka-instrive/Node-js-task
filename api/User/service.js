@@ -14,7 +14,9 @@ const create = async (params) => {
   }
 };
 
-const getData = async (page, limit, sortBy, sortOrder, search) => {
+const getData = async (params) => {
+  const { page, limit, sortBy, sortOrder, search } = params;
+
   try {
     const offset = (page - 1) * limit;
     const sort = { [sortBy]: sortOrder === "asc" ? 1 : -1 };
@@ -38,12 +40,16 @@ const getData = async (page, limit, sortBy, sortOrder, search) => {
       },
       { $match: match },
       { $sort: sort },
-      { $skip: offset },
-      { $limit: limit },
       {
         $facet: {
-          items: [],
+          items: [{ $skip: offset }, { $limit: limit }],
           totalCount: [{ $count: "count" }],
+        },
+      },
+      {
+        $project: {
+          items: 1,
+          totalCount: { $arrayElemAt: ["$totalCount.count", 0] },
         },
       },
     ];

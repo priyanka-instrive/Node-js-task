@@ -29,4 +29,5 @@ const morganRequestFormat = function (tokens, req, res) {
 
 module.exports = {
   morganRequestFormat,
+  cors: cors,
 };

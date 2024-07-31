@@ -27,7 +27,7 @@ app.get("/", () => {
 app.use("/", userInfo);
 
 //private route
-app.use("/", auth.authenticate);
+app.use(auth.authenticate);
 app.use("/", fileUpload);
 
 app.listen(3000, () => {
