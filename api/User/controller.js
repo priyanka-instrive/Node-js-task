@@ -1,6 +1,7 @@
 const service = require("./service");
 const xlsx = require("xlsx");
 const User = require("../User/index");
+const mime = require("mime-types");
 
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -11,6 +12,17 @@ const uploadExcelFile = async (req, res) => {
   try {
     if (!req.file || !req.file.path) {
       return res.status(400).json({ message: "File is missing" });
+    }
+
+    const mimeType = mime.lookup(req.file.path);
+    if (
+      mimeType !==
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
+      mimeType !== "application/vnd.ms-excel"
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Invalid file type. Please upload an Excel file." });
     }
 
     const workbook = xlsx.readFile(req.file.path);
