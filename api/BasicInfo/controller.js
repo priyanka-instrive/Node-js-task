@@ -36,18 +36,20 @@ const create = async (req, res) => {
       return res.status(409).json("User Already Exists");
     }
 
-    await validate(res, "basicInfo", {
+    let isValid = await validate(res, "basicInfo", {
       basic_company_info,
       key_contact_person,
     });
-    await validate(res, "managementInfo", {
+    isValid = await validate(res, "managementInfo", {
       tell_about_yourself,
       management_team_details,
     });
-    await validate(res, "productInfo", {
+    isValid = await validate(res, "productInfo", {
       show_product_portfolio,
     });
-
+    if (!isValid) {
+      return;
+    }
     const basicInfo = await service.create({
       basic_company_info,
       key_contact_person,
@@ -76,8 +78,8 @@ const create = async (req, res) => {
 };
 
 const updatePassword = async (req, res) => {
-  let password = req.body.password;
   const secretKey = req.query.token;
+  let password = req.body.password;
 
   try {
     const findPass = await service.find(secretKey);
