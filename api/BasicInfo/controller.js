@@ -5,6 +5,20 @@ const jwt = require("../../system/middleware/jwt");
 const sendMail = require("../../system/sendmail/index");
 const { v4: uuidv4 } = require("uuid");
 const { convertImageToBase64 } = require("../../system/uploadImage/upload");
+const schema = require("./schema");
+
+const validate = async (res, schemaName, data) => {
+  const schemaToValidate = schema.create[schemaName];
+  let { error } = schemaToValidate.validate(data);
+  if (error) {
+    res.status(400).json({
+      status: "error",
+      message: error.details.map((detail) => detail.message).join(", "),
+    });
+    return false;
+  }
+  return true;
+};
 
 const create = async (req, res) => {
   try {
@@ -17,21 +31,20 @@ const create = async (req, res) => {
     const show_product_portfolio = JSON.parse(req.body.show_product_portfolio);
     const userImage = req.file;
     key_contact_person["user_image"] = convertImageToBase64(userImage.path);
-
     const user = await service.findUser(key_contact_person.email);
     if (user) {
       return res.status(409).json("User Already Exists");
     }
 
-    await service.validate(res, "basicInfo", {
+    await validate(res, "basicInfo", {
       basic_company_info,
       key_contact_person,
     });
-    await service.validate(res, "managementInfo", {
+    await validate(res, "managementInfo", {
       tell_about_yourself,
       management_team_details,
     });
-    await service.validate(res, "productInfo", {
+    await validate(res, "productInfo", {
       show_product_portfolio,
     });
 
@@ -186,4 +199,5 @@ module.exports = {
   forgotPassword,
   changePassword,
   getRefreshToken,
+  validate,
 };

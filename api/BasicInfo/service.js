@@ -1,7 +1,6 @@
 const { BasicSchema, ManagmentSchema, productInfoSchema } = require("./index");
 const sendMail = require("../../system/sendmail/index");
 const { v4: uuidv4 } = require("uuid");
-const schema = require("./schema");
 
 const create = async (params) => {
   let newData;
@@ -83,19 +82,6 @@ const findUser = async (email) => {
   return data;
 };
 
-const validate = async (res, schemaName, data) => {
-  const schemaToValidate = schema.create[schemaName];
-  let { error } = schemaToValidate.validate(data);
-  if (error) {
-    res.status(400).json({
-      status: "error",
-      message: error.details.map((detail) => detail.message).join(", "),
-    });
-    return false;
-  }
-  return true;
-};
-
 module.exports = {
   create,
   find,
@@ -103,5 +89,4 @@ module.exports = {
   createManagment,
   update,
   findUser,
-  validate,
 };
