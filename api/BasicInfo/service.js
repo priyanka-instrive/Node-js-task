@@ -1,7 +1,4 @@
 const { BasicSchema, ManagmentSchema, productInfoSchema } = require("./index");
-const sendMail = require("../../system/sendmail/index");
-const passService = require("../ResetPassword/service");
-const { v4: uuidv4 } = require("uuid");
 
 const create = async (params) => {
   let newData;
@@ -31,20 +28,9 @@ const createManagment = async (params, id) => {
 
 const createProduct = async (params, id) => {
   let newData;
-
   try {
     newData = await productInfoSchema.create({ company_id: id, ...params });
-    const data = await BasicSchema.findById(newData.company_id);
-    if (data.key_contact_person.email) {
-      const userEmail = data.key_contact_person.email;
-      const secretKey = uuidv4();
-      const link = `http://localhost:3000/update_password/?token=${secretKey}`;
-      await passService.create({ _id: data?._id, secretKey });
-      await sendMail(userEmail, link);
-      return newData;
-    } else {
-      throw new Error("Failed to retrieve user email for sending mail");
-    }
+    return newData;
   } catch (error) {
     console.error("Error in service create method:", error);
     throw error;

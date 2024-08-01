@@ -23,7 +23,6 @@ const schema = Joi.object({
   sortOrder: Joi.string().allow(null, "").optional(),
 }).required();
 
-// Middleware function to validate request
 const validateUserData = (req, res, next) => {
   const { error } = schema.validate(req.query);
   if (error) {
@@ -32,7 +31,6 @@ const validateUserData = (req, res, next) => {
   next();
 };
 
-// Export the validation middleware
 module.exports = {
   validateUserData,
   schema,

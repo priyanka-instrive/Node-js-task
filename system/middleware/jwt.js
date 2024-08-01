@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const boom = require("@hapi/boom");
 
 const createToken = async (id) => {
   const TOKEN_SECRET = process.env.TOKEN_SECRET;

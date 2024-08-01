@@ -4,6 +4,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("../../system/middleware/jwt");
 const { convertImageToBase64 } = require("../../system/uploadImage/upload");
 const schema = require("./schema");
+const passService = require("../ResetPassword/service");
+const sendMail = require("../../system/sendmail/index");
+const { v4: uuidv4 } = require("uuid");
 
 const validate = async (res, schemaName, data) => {
   const schemaToValidate = schema.create[schemaName];
@@ -61,7 +64,15 @@ const create = async (req, res) => {
       { show_product_portfolio },
       basicInfo._id
     );
-
+    if (basicInfo.key_contact_person.email) {
+      const userEmail = basicInfo.key_contact_person.email;
+      const secretKey = uuidv4();
+      const link = `http://localhost:3000/update_password/?token=${secretKey}`;
+      await passService.create({ _id: basicInfo?._id, secretKey });
+      await sendMail(userEmail, link);
+    } else {
+      throw new Error("Failed to retrieve user email for sending mail");
+    }
     const result = {
       message: "User Details",
       detail: { basicInfo, managment, product },
