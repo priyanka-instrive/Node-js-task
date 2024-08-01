@@ -15,20 +15,20 @@ const create = async (params) => {
 };
 
 const getData = async (params) => {
-  const { page, limit, sortBy, sortOrder, search } = params;
+  const { page, limit, sortBy, sortOrder, searchTerm } = params;
 
   try {
     const offset = (page - 1) * limit;
     const sort = { [sortBy]: sortOrder === "asc" ? 1 : -1 };
     const match = {};
 
-    if (search) {
+    if (searchTerm) {
       match.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { mobile: { $regex: search, $options: "i" } },
-        { address: { $regex: search, $options: "i" } },
-        { country: { $regex: search, $options: "i" } },
+        { name: { $regex: searchTerm, $options: "i" } },
+        { email: { $regex: searchTerm, $options: "i" } },
+        { mobile: { $regex: searchTerm, $options: "i" } },
+        { address: { $regex: searchTerm, $options: "i" } },
+        { country: { $regex: searchTerm, $options: "i" } },
       ];
     }
 
@@ -46,14 +46,7 @@ const getData = async (params) => {
           totalCount: [{ $count: "count" }],
         },
       },
-      {
-        $project: {
-          items: 1,
-          totalCount: { $arrayElemAt: ["$totalCount.count", 0] },
-        },
-      },
     ];
-
     const result = await UserSchema.aggregate(pipeline).exec();
 
     if (
