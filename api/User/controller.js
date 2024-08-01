@@ -30,6 +30,7 @@ const uploadExcelFile = async (req, res) => {
     const worksheet = workbook.Sheets[firstSheetName];
 
     const rawData = xlsx.utils.sheet_to_json(worksheet);
+
     if (rawData.length === 0) {
       return res.status(400).json({ message: "Excel sheet is empty" });
     }
@@ -67,7 +68,6 @@ const uploadExcelFile = async (req, res) => {
       };
       return validData;
     });
-
     const data = await service.create(transformedData);
     const result = {
       message: "Successfully Uploaded",

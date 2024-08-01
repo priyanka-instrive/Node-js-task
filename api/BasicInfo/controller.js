@@ -33,7 +33,6 @@ const create = async (req, res) => {
     if (user) {
       return res.status(409).json("User Already Exists");
     }
-
     let isValid = await validate(res, "basicInfo", {
       basic_company_info,
       key_contact_person,
@@ -67,8 +66,7 @@ const create = async (req, res) => {
       message: "User Details",
       detail: { basicInfo, managment, product },
     };
-    res.status(201).json(result);
-    return;
+    return res.status(201).json(result);
   } catch (error) {
     console.error("Error in create controller:", error);
     return res.status(500).json("Internal server error.", error);

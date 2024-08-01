@@ -54,11 +54,7 @@ const getData = async (params) => {
       },
     ];
 
-    console.log("Pipeline:", JSON.stringify(pipeline, null, 2));
-
     const result = await UserSchema.aggregate(pipeline).exec();
-
-    console.log("Result:", JSON.stringify(result, null, 2));
 
     if (
       result.length === 0 ||
@@ -69,9 +65,7 @@ const getData = async (params) => {
     }
 
     const items = result[0].items;
-    const totalItems = result[0].totalCount[0]
-      ? result[0].totalCount[0].count
-      : 0;
+    const totalItems = result[0].totalCount || 0;
 
     return { items, totalItems };
   } catch (error) {
