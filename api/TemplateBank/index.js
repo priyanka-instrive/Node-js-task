@@ -166,7 +166,7 @@ const PreliminaryInformationSchema = new Schema({
   rfp_terms_condition: RfpTermsConditionSchema,
 });
 
-//ScopeOfWork Main Schema//
+//ScopeOfWork sub Schema
 const CommercialContractsSchema = new Schema({
   legal_advice: {
     date: { type: Date },
@@ -1112,7 +1112,7 @@ const OtherSchema = new Schema({
   file: [{ type: String }],
   date: { type: Date },
 });
-
+//main scope of work schema
 const MainScopeOfWorkSchema = new Schema({
   scope_name: {
     type: String,
@@ -1276,7 +1276,7 @@ const FollowingJurisdictionSchema = new Schema({
   comment: { type: String },
 });
 
-// Main Schema
+// pricing Main Schema
 const pricingMainSchema = new Schema({
   pricing: PricingSchema,
   expenses: ExpensesSchema,
@@ -1426,7 +1426,7 @@ const OtherKeyInformationSchema = new Schema({
   },
 });
 
-//Final Schema
+//Final rfp  Schema
 const rfpSchema = new Schema({
   company_conflict_check: CompanyConflictCheckSchema,
   Preliminary_information: [PreliminaryInformationSchema],
