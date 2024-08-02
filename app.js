@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 const userInfo = require("./api/BasicInfo/route");
 const fileUpload = require("./api/User/route");
 const passwordRoute = require("./api/ResetPassword/route");
+const templateBankRoute = require("./api/TemplateBank/route");
 
 //public route
 app.get("/", () => {
@@ -31,6 +32,7 @@ app.use("/password", passwordRoute);
 //private route
 app.use(auth.authenticate);
 app.use("/auth", fileUpload);
+app.use("/template", templateBankRoute);
 
 app.listen(3000, () => {
   console.log("Server Is Running On " + 3000);

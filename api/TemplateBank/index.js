@@ -167,405 +167,416 @@ const PreliminaryInformationSchema = new Schema({
 });
 
 //ScopeOfWork sub Schema
-const CommercialContractsSchema = new Schema({
-  legal_advice: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  contract_drafting: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  contract_review: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  negotiation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  regulatory: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  others: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  comment: { type: String },
-  file: [{ type: String }],
+
+// Define reusable schema for checked, date, and comment fields
+const commonSchema = new Schema({
+  checked: { type: Boolean, default: false },
+  date: { type: Date, required: false },
+  comment: { type: String, required: false, default: "" },
+  file: [{ type: String, required: false }],
 });
 
-const BehaviouralWorkSchema = new Schema({
-  cartel_investigation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  antitrust_investigation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  state_aid_investigation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  others: {
-    date: { type: Date },
-    comment: { type: String },
-  },
+// Define each specific schema using commonSchema for reusable fields
+const commercialContractsSchema = new Schema({
+  legal_advice: commonSchema,
+  contract_drafting: commonSchema,
+  contract_review: commonSchema,
+  negotiation: commonSchema,
+  regulatory: commonSchema,
+  others: commonSchema,
+  comment: { type: String, required: false, default: "" },
+  file: [{ type: String, required: false }],
 });
 
-const CompetitionSchema = new Schema({
+// Schema for competition
+const competitionSchema = new Schema({
   transactional_work: {
-    merger_control_advice: {
-      date: { type: Date },
-      comment: { type: String },
-    },
-    advice: {
-      date: { type: Date },
-      comment: { type: String },
-    },
+    merger_control_advice: commonSchema,
+    advice: commonSchema,
   },
-  behavioural_work: BehaviouralWorkSchema,
-  file: [{ type: String }],
+  behavioural_work: {
+    cartel_investigation: commonSchema,
+    antitrust_investigation: commonSchema,
+    state_aid_investigation: commonSchema,
+    advice: commonSchema,
+    others: commonSchema,
+  },
+  comment: { type: String, required: false, default: "" },
+  file: [{ type: String, required: false }],
 });
 
-// Corporate M&A Schema
-const CorporateMASchema = new Schema({
-  term_sheet_negotiation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  due_diligence: {
-    date: { type: Date },
-    comment: { type: String },
-    red_flag_only: { type: Boolean },
-    vendor_idd: { type: Boolean },
-    online_data_room: { type: Boolean },
-    key_area_of_focus: [{ type: String }],
-  },
-  regulatory: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  transaction_doc: [
-    {
-      date: { type: Date },
-      comment: { type: String },
-    },
-  ],
-  draft_main_doc: { type: Boolean },
-  review_main_doc: { type: Boolean },
-  wi_policy: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  financing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  signing_process: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  closing_process: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  others: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  file: [{ type: String }],
+const dueDiligenceSchema = new Schema({
+  checked: { type: Boolean, default: false },
+  date: { type: Date, required: false },
+  comment: { type: String, required: false, default: "" },
+  red_flag_only: { type: Boolean, required: false },
+  vendor_idd: { type: Boolean, required: false },
+  online_data_room: { type: Boolean, required: false },
+  key_area_of_focus: [{ type: String, required: false }],
 });
 
-// Data Protection & Privacy Schema
-const DataProtectionPrivacySchema = new Schema({
-  data_protection_programme: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  new_processing_system: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  review_data_protection: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  localise_data_protection: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  advice_change_law: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  data_protection_reprepared: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  direct_marketing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  record_rentation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  data_security_breach: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  excercise_data_subject_rights: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  data_protection_regulatory: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  retainer_ad: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  data_protecting_training: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  others: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  file: [{ type: String }],
+const transactionDocSchema = new Schema({
+  checked: { type: Boolean, default: false },
+  date: { type: Date, required: false },
+  comment: { type: String, required: false, default: "" },
+  draft_main_doc: { type: Boolean, required: false },
+  review_main_doc: { type: Boolean, required: false },
+  file: [{ type: String, required: false }],
 });
 
-// Employment Schema
-const EmploymentSchema = new Schema({
-  generalHRLegalAdvice: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  reviewOfHRContracts: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  draftingReviewingEmploymentContracts: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  advisingOnRestrictionsForNewHires: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  redundancy: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  dismissalSettlementAgreement: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  employmentBenefits: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  consultantsContractorsArrangements: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  supplyOfStaffArrangements: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  HRAspectsOfOutsourcingInsourcing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  adviceInRespectOfGrievance: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  adviceInRespectOfDisciplinaryProcess: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  crossBorderAdvisoryProject: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  immigrationVisas: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  discriminationDiversityEqualOpportunities: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  employmentInvestigation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  newProposedEmploymentLegislation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  reportingObligations: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  protectingConfidentialInformation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  performanceManagement: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  longTermSickness: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  remunerationPackageIncentivesDesign: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  ongoingRemunerationIncentivesAdvice: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  whistleblowing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  employeeHealthSafety: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  adviceRelatedToPensions: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  other: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  comment: { type: String },
-  file: [{ type: String }],
+const corporateMASchema = new Schema({
+  term_sheet_negotiation: commonSchema,
+  due_diligence: dueDiligenceSchema,
+  regulatory: commonSchema,
+  transaction_doc: transactionDocSchema,
+  wi_policy: commonSchema,
+  financing: commonSchema,
+  signing_process: commonSchema,
+  closing_process: commonSchema,
+  others: commonSchema,
+  comment: { type: String, required: false, default: "" },
+  file: [{ type: String, required: false }],
+});
+
+const dataProtectionPrivacySchema = new Schema({
+  data_protection_programme: commonSchema,
+  new_processing_system: commonSchema,
+  review_data_protection: commonSchema,
+  localise_data_protection: commonSchema,
+  advice_change_law: commonSchema,
+  data_protection_reprepared: commonSchema,
+  direct_marketing: commonSchema,
+  record_retention: commonSchema,
+  data_security_breach: commonSchema,
+  exercise_data_subject_rights: commonSchema,
+  data_protection_regulatory: commonSchema,
+  retainer_ad: commonSchema,
+  data_protection_training: commonSchema,
+  others: commonSchema,
+  comment: { type: String, required: false, default: "" },
+  file: [{ type: String, required: false }],
+});
+
+const employmentSchema = new Schema({
+  generalHRLegalAdvice: commonSchema,
+  reviewOfHRContracts: commonSchema,
+  draftingReviewingEmploymentContracts: commonSchema,
+  advisingOnRestrictionsForNewHires: commonSchema,
+  redundancy: commonSchema,
+  dismissalSettlementAgreement: commonSchema,
+  employmentBenefits: commonSchema,
+  consultantsContractorsArrangements: commonSchema,
+  supplyOfStaffArrangements: commonSchema,
+  HRAspectsOfOutsourcingInsourcing: commonSchema,
+  adviceInRespectOfGrievance: commonSchema,
+  adviceInRespectOfDisciplinaryProcess: commonSchema,
+  crossBorderAdvisoryProject: commonSchema,
+  immigrationVisas: commonSchema,
+  discriminationDiversityEqualOpportunities: commonSchema,
+  employmentInvestigation: commonSchema,
+  newProposedEmploymentLegislation: commonSchema,
+  reportingObligations: commonSchema,
+  protectingConfidentialInformation: commonSchema,
+  performanceManagement: commonSchema,
+  longTermSickness: commonSchema,
+  remunerationPackageIncentivesDesign: commonSchema,
+  ongoingRemunerationIncentivesAdvice: commonSchema,
+  whistleblowing: commonSchema,
+  employeeHealthSafety: commonSchema,
+  adviceRelatedToPensions: commonSchema,
+  other: commonSchema,
+  comment: { type: String, required: false, default: "" },
+  file: [{ type: String, required: false }],
 });
 
 const derivativesStructureProductSchema = new Schema({
-  structure_credit_product: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  structure_equity_product: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  interest_inflation_product: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  commodity_transaction: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  etp_platform: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  prime_brokerage_agreements: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  credit_risk_mitigation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  repos_securities_landing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  other: {
-    date: { type: Date },
-    comment: { type: String },
-  },
+  structure_credit_product: commonSchema,
+  structure_equity_product: commonSchema,
+  interest_inflation_product: commonSchema,
+  commodity_transaction: commonSchema,
+  etp_platform: commonSchema,
+  prime_brokerage_agreements: commonSchema,
+  credit_risk_mitigation: commonSchema,
+  repos_securities_lending: commonSchema,
+  other: commonSchema,
 });
 
-const FinancingCapitalMarketSchema = new Schema({
+const financingCapitalMarketSchema = new Schema({
   exclusivity: {
     nonExclusiveBasis: {
-      type: Boolean,
-      comment: { type: String },
+      checked: { type: Boolean, default: false },
+      comment: { type: String, required: false, default: "" },
     },
     exclusiveBasis: {
-      type: Boolean,
+      checked: { type: Boolean, default: false },
       comment: { type: String },
     },
   },
   asset_leasing_finance: {
-    date: { type: Date },
-    comment: { type: String },
-    structuring: { type: Boolean },
-    documentation: { type: Boolean },
-    advisory: { type: Boolean },
-    due_diligence: { type: Boolean },
+    checked: { type: Boolean, default: false },
+    date: { type: Date, required: false },
+    comment: { type: String, required: false, default: "" },
+    structuring: { type: Boolean, required: false },
+    documentation: { type: Boolean, required: false },
+    advisory: { type: Boolean, required: false },
+    due_diligence: { type: Boolean, required: false },
   },
-  corporate_lending: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  debt_capital_markets: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  equity_capital_markets: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  islamic_finance: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  leveraged_acquisition_finance: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  real_estate_finance: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  securitisation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
+  corporate_lending: commonSchema,
+  debt_capital_markets: commonSchema,
+  equity_capital_markets: commonSchema,
+  islamic_finance: commonSchema,
+  leveraged_acquisition_finance: commonSchema,
+  real_estate_finance: commonSchema,
+  securitisation: commonSchema,
   derivatives_structure_product: derivativesStructureProductSchema,
-  trade_commodities_finance: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  corporate_trust: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  others: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  regulatory_compliance: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  enforcement: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  file: [{ type: String }],
+  trade_commodities_finance: commonSchema,
+  corporate_trust: commonSchema,
+  others: commonSchema,
+  regulatory_compliance: commonSchema,
+  enforcement: commonSchema,
+  file: [{ type: String, required: false }],
 });
 
-// Project Financing Schema
-const ProjectFinancingSchema = new Schema({
+const usMarketingSchema = new Schema({
+  advisingUSPrivatePlacementExemptions: { type: Boolean, default: false },
+  providingUSSecuritiesLawOpinion: { type: Boolean, default: false },
+  completingUSRegulationDFilings: { type: Boolean, default: false },
+});
+
+const phase2Schema = new Schema({
+  marketing: { type: Boolean, default: false },
+  reviewingPitchBookTeaser: { type: Boolean, default: false },
+  marketingAdviceSellingRestrictions: { type: Boolean, default: false },
+  fundInterestsIntoEUJurisdictionsUnderAIFMD: { type: Boolean, default: false },
+  allRelevantNonUSAndNonEUJurisdictions: { type: Boolean, default: false },
+  marketingInTheUS: usMarketingSchema,
+  comment: { type: String, required: false, default: "" },
+});
+
+const phase3Schema = new Schema({
+  drafting_ppm: commonSchema,
+  core_documents: commonSchema,
+  ancillary_documents: commonSchema,
+  comment: { type: String, required: false, default: "" },
+});
+
+const phase4Schema = new Schema({
+  entity_establishment: commonSchema,
+  negotiation: commonSchema,
+  closing: commonSchema,
+  comment: { type: String, required: false, default: "" },
+});
+
+const phase5Schema = new Schema({
+  post_closing: commonSchema,
+  optional_workstream: commonSchema,
+  comment: { type: String, required: false, default: "" },
+});
+
+const fundFormationSchema = new Schema({
+  phase_1: {
+    structuring: commonSchema,
+    term_sheet: commonSchema,
+    comment: { type: String, required: false, default: "" },
+  },
+  phase_2: phase2Schema,
+  phase_3: phase3Schema,
+  phase_4: phase4Schema,
+  phase_5: phase5Schema,
+  file: [{ type: String, required: false }],
+});
+const fundInvestmentSchema = new Schema({
+  summarising_key_terms: commonSchema,
+  negotiating_with_legal_counsel: commonSchema,
+  related_tax_advice: commonSchema,
+  assistance_in_execution_and_closing: commonSchema,
+  file: [{ type: String, required: false }],
+});
+
+const ipSchema = new Schema({
+  portfolio_management: commonSchema,
+  commercialisation: commonSchema,
+  enforcement: commonSchema,
+  other: commonSchema,
+  file: [{ type: String, required: false }],
+});
+
+const categorySchema = new Schema({
+  privacy_cyber_security: commonSchema,
+  outsourcing_commercial_contract: commonSchema,
+  tech_joint_ventures: commonSchema,
+  licensing: commonSchema,
+  fintech: commonSchema,
+  other: commonSchema,
+});
+
+const phasesSchema = new Schema({
+  kick_off: commonSchema,
+  documentation_preparation_review: commonSchema,
+  negotiation: commonSchema,
+  closing: commonSchema,
+  memo_of_advice: commonSchema,
+});
+
+const itSchema = new Schema({
+  category: categorySchema,
+  phases: phasesSchema,
+  file: [{ type: String, required: false }],
+});
+
+const litigationSchema = new Schema({
+  investigation_phase: commonSchema,
+  pleading: commonSchema,
+  dispositive_motion: commonSchema,
+  exchange_evidence: commonSchema,
+  pre_trial: commonSchema,
+  trial: commonSchema,
+  settlement: commonSchema,
+  appeal: commonSchema,
+  enforcement: commonSchema,
+  other: commonSchema,
+  comment: { type: String, required: false, default: "" },
+  file: [{ type: String, required: false }],
+});
+const arbitrationSchema = new Schema({
+  investigation_phase: commonSchema,
+  arbitration: commonSchema,
+  initial_memoranda: commonSchema,
+  exchange_evidence: commonSchema,
+  additional_memoranda: commonSchema,
+  hearing: commonSchema,
+  post_hearing_memoranda: commonSchema,
+  settlement: commonSchema,
+  appeal: commonSchema,
+  enforcement: commonSchema,
+  other: commonSchema,
+  file: [{ type: String, required: false }],
+});
+
+const restructuringSchema = new Schema({
+  role: {
+    type: String,
+    enum: [
+      "Company",
+      "Creditors",
+      "Shareholder/Investor",
+      "Insolvency administrator",
+      "Facility Agent / Trustee",
+      "Accountant",
+      "Financial Adviser",
+      "Other",
+    ],
+    required: false,
+  },
+  rescue_securitisations: commonSchema,
+  moratorium_debts: commonSchema,
+  debt_equity_swaps: commonSchema,
+  corporate_restructuring: commonSchema,
+  corporate_finance_transaction: commonSchema,
+  structure_receiverships: commonSchema,
+  insolvency_process: commonSchema,
+  contingency_planning: commonSchema,
+  enforcing_security: commonSchema,
+  distress_debt_trading: commonSchema,
+  other: commonSchema,
+  file: [{ type: String, required: false }],
+});
+
+const insolvencySchema = new Schema({
+  role: {
+    type: String,
+    enum: [
+      "Company",
+      "Creditors",
+      "Shareholder/Investor",
+      "Insolvency administrator",
+      "Facility Agent / Trustee",
+      "Accountant",
+      "Financial Adviser",
+      "Other",
+    ],
+    required: false,
+  },
+  formal_insolvencies: commonSchema,
+  litigation_resolution: commonSchema,
+  purchase_sale_claims: commonSchema,
+  advice_relation_avoidance_action: commonSchema,
+  advice_regulatory_finance_issue: commonSchema,
+  investigation: commonSchema,
+  fraud_asset_tracing: commonSchema,
+  other: commonSchema,
+  file: [{ type: String, required: false }],
+});
+
+const scopingQuestionSchema = new Schema({
+  regulated_industry_type: {
+    type: String,
+    enum: [
+      "Agriculture",
+      "Consumer",
+      "Energy & Resources",
+      "Financial Services",
+      "Government",
+      "Industrials",
+      "Life Sciences & Healthcare",
+      "Real estate",
+      "TMT",
+      "Transportation & Logistics",
+      "Other",
+    ],
+    required: false,
+  },
+  list_jurisdiction: { type: String, required: false },
+  target_entities: { type: String, required: false },
+  internal_entities: { type: String, required: false },
+});
+
+const bestCharactersInvolveSchema = new Schema({
+  regulatory_perimeter: commonSchema,
+  licence_application: commonSchema,
+  ownership: commonSchema,
+  foreign_direct_investment: commonSchema,
+  assistant_preparation: commonSchema,
+  regulatory_audit: commonSchema,
+  assistance_internal_reorganisation: commonSchema,
+  material_regulatory: commonSchema,
+  assistance_regulatory: commonSchema,
+  other: commonSchema,
+});
+
+const regulatorySchema = new Schema({
+  scoping_question: scopingQuestionSchema,
+  best_characters_involve: bestCharactersInvolveSchema,
+  file: [{ type: String, required: false }],
+});
+
+const typeSchema = new Schema({
+  transactional_tax: commonSchema,
+  tax_investigation: commonSchema,
+  transfer_pricing: commonSchema,
+  indirect_tax: commonSchema,
+  tax_planning: commonSchema,
+  tax_policy: commonSchema,
+  other: commonSchema,
+});
+
+const taxSchema = new Schema({
+  type: typeSchema,
+  staged_approach: commonSchema,
+  implementation: {
+    corporate_in_charge: commonSchema,
+    legal_service_provider_implementation: commonSchema,
+  },
+  file: [{ type: String, required: false }],
+});
+
+const otherSchema = new Schema({
+  description: { type: String, required: false },
+  file: [{ type: String, required: false }],
+  expected_completion_date: { type: Date, required: false },
+});
+
+const projectFinancingSchema = new Schema({
   tender_phase: {
     date: { type: Date },
     comment: { type: String },
@@ -598,522 +609,8 @@ const ProjectFinancingSchema = new Schema({
   file: [{ type: String }],
 });
 
-const USMarketingSchema = new Schema({
-  advisingUSPrivatePlacementExemptions: { type: Boolean, default: false },
-  providingUSSecuritiesLawOpinion: { type: Boolean, default: false },
-  completingUSRegulationDFilings: { type: Boolean, default: false },
-});
-
-const Phase2Schema = new Schema({
-  marketing: { type: Boolean, default: false },
-  reviewingPitchBookTeaser: { type: Boolean, default: false },
-  marketingAdviceSellingRestrictions: { type: Boolean, default: false },
-  fundInterestsIntoEUJurisdictionsUnderAIFMD: { type: Boolean, default: false },
-  allRelevantNonUSAndNonEUJurisdictions: { type: Boolean, default: false },
-  marketingInTheUS: { type: USMarketingSchema, default: {} },
-  comment: { type: String },
-});
-
-const Phase3Schema = new Schema({
-  drafting_ppm: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  core_documents: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  ancillary_documents: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  comment: { type: String },
-});
-
-const Phase4Schema = new Schema({
-  entity_establishment: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  negotiation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  closing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  comment: { type: String },
-});
-
-const Phase5Schema = new Schema({
-  post_closing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  optional_workstream: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  comment: { type: String },
-});
-
-const FundFormationSchema = new Schema({
-  phase_1: {
-    structuring: {
-      date: { type: Date },
-      comment: { type: String },
-    },
-    term_sheet: {
-      date: { type: Date },
-      comment: { type: String },
-    },
-    comment: { type: String },
-  },
-  phase_2: Phase2Schema,
-  phase_3: Phase3Schema,
-  phase_4: Phase4Schema,
-  phase_5: Phase5Schema,
-  file: [{ type: String }],
-});
-
-// Fund Investment Schema
-const FundInvestmentSchema = new Schema({
-  summarising_key_terms: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  negotiating_with_legal_counsel: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  related_tax_advice: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  assistance_in_execution_and_closing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  file: [{ type: String }],
-});
-
-// IP Schema
-const IPSchema = new Schema({
-  portfolio_management: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  commercialisation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  enforcement: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  other: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  file: [{ type: String }],
-});
-
-// IT Subschemas
-const CategorySchema = new Schema({
-  privacy_cyber_security: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  outsourcing_commercial_contract: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  tech_joint_ventures: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  licensing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  fintech: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  other: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-});
-
-const PhasesSchema = new Schema({
-  kick_off: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  documentation_preparation_review: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  negotiation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  closing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  memo_of_advice: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-});
-
-const ITSchema = new Schema({
-  category: CategorySchema,
-  phases: PhasesSchema,
-  file: [{ type: String }],
-});
-
-// Litigation Schema
-const LitigationSchema = new Schema({
-  investigation_phase: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  pleading: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  dispositive_motion: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  exchange_evidence: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  pre_trial: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  trial: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  settlement: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  appeal: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  enforcement: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  other: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  comment: { type: String },
-  file: [{ type: String }],
-});
-
-// Arbitration Schema
-const ArbitrationSchema = new Schema({
-  investigation_phase: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  arbitration: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  initial_memoranda: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  exchange_evidence: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  additional_memoranda: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  hearing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  post_hearing_memoranda: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  settlement: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  appeal: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  enforcement: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  other: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  file: [{ type: String }],
-});
-
-// Restructuring Schema
-const RestructuringSchema = new Schema({
-  role: {
-    type: String,
-    enum: [
-      "Company",
-      "Creditors",
-      "Shareholder/Investor",
-      "Insolvency administrator",
-      "Facility Agent / Trustee",
-      "Accountant",
-      "Financial Adviser",
-      "Other",
-    ],
-  },
-  rescue_securitisations: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  moratorium_debts: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  debt_equity_swaps: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  corporate_restructuring: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  corporate_finance_transaction: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  structure_receiverships: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  insolvency_process: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  contingency_planning: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  enforcing_security: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  distress_debt_trading: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  other: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  file: [{ type: String }],
-});
-
-// Insolvency Schema
-const InsolvencySchema = new Schema({
-  role: {
-    type: String,
-    enum: [
-      "Company",
-      "Creditors",
-      "Shareholder/Investor",
-      "Insolvency administrator",
-      "Facility Agent / Trustee",
-      "Accountant",
-      "Financial Adviser",
-      "Other",
-    ],
-  },
-  formal_insolvencies: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  litigation_resolution: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  purchase_sale_claims: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  advice_relation_avoidance_action: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  advice_regulatory_finance_issue: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  investigation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  fraud_asset_tracing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  other: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  file: [{ type: String }],
-});
-
-// Regulatory Subschemas
-const ScopingQuestionSchema = new Schema({
-  regulated_industry_type: {
-    type: String,
-    enum: [
-      "Agriculture",
-      "Consumer",
-      "Energy & Resources",
-      "Financial Services",
-      "Government",
-      "Industrials",
-      "Life Sciences & Healthcare",
-      "Real estate",
-      "TMT",
-      "Transportation & Logistics",
-      "Other",
-    ],
-  },
-  list_jurisdiction: { type: String },
-  target_entities: { type: String },
-  internal_entities: { type: String },
-});
-
-const BestCharactersInvolveSchema = new Schema({
-  regulatory_perimeter: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  licence_application: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  ownership: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  foreign_direct_investment: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  assistant_preparation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  regulatory_audit: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  assistance_internal_reorganisation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  material_regulatory: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  assistance_regulatory: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  other: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-});
-
-const RegulatorySchema = new Schema({
-  scoping_question: ScopingQuestionSchema,
-  best_characters_involve: BestCharactersInvolveSchema,
-  file: [{ type: String }],
-});
-
-// Tax Subschemas
-const TypeSchema = new Schema({
-  transactional_tax: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  tax_investigation: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  transfer_pricing: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  indirect_tax: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  tax_planning: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  tax_policy: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  other: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-});
-
-const TaxSchema = new Schema({
-  type: TypeSchema,
-  staged_approach: {
-    date: { type: Date },
-    comment: { type: String },
-  },
-  implementation: {
-    corporate_in_charge: {
-      date: { type: Date },
-      comment: { type: String },
-    },
-    legal_service_provider_implementation: {
-      date: { type: Date },
-      comment: { type: String },
-    },
-  },
-  file: [{ type: String }],
-});
-
-// Other Schema
-const OtherSchema = new Schema({
-  other: { type: String },
-  file: [{ type: String }],
-  date: { type: Date },
-});
-//main scope of work schema
-const MainScopeOfWorkSchema = new Schema({
+// Main Scope of Work Schema
+const mainScopeOfWorkSchema = new Schema({
   scope_name: {
     type: String,
     enum: [
@@ -1136,89 +633,127 @@ const MainScopeOfWorkSchema = new Schema({
       "Tax",
       "Other",
     ],
+    required: false,
   },
-  commercial_contracts: CommercialContractsSchema,
-  competition: CompetitionSchema,
-  corporate_ma: CorporateMASchema,
-  data_protection_privacy: DataProtectionPrivacySchema,
-  employment: EmploymentSchema,
-  financing_capital_market: FinancingCapitalMarketSchema,
-  project_financing: ProjectFinancingSchema,
-  fund_formation: FundFormationSchema,
-  fund_investment: FundInvestmentSchema,
-  ip: IPSchema,
-  it: ITSchema,
-  litigation: LitigationSchema,
-  arbitration: ArbitrationSchema,
-  restructuring: RestructuringSchema,
-  insolvency: InsolvencySchema,
-  regulatory: RegulatorySchema,
-  tax: TaxSchema,
-  other: OtherSchema,
+  commercial_contracts: { type: commercialContractsSchema, required: false },
+  competition: { type: competitionSchema, required: false },
+  corporate_ma: { type: corporateMASchema, required: false },
+  data_protection_privacy: {
+    type: dataProtectionPrivacySchema,
+    required: false,
+  },
+  employment: { type: employmentSchema, required: false },
+  financing_capital_market: {
+    type: financingCapitalMarketSchema,
+    required: false,
+  },
+  project_financing: { type: projectFinancingSchema, required: false },
+  fund_formation: { type: fundFormationSchema, required: false },
+  fund_investment: { type: fundInvestmentSchema, required: false },
+  ip: { type: ipSchema, required: false },
+  it: { type: itSchema, required: false },
+  litigation: { type: litigationSchema, required: false },
+  arbitration: { type: arbitrationSchema, required: false },
+  restructuring: { type: restructuringSchema, required: false },
+  insolvency: { type: insolvencySchema, required: false },
+  regulatory: { type: regulatorySchema, required: false },
+  tax: { type: taxSchema, required: false },
+  other: { type: otherSchema, required: false },
 });
 
 //Pricing Schema//
 
-const ModelSchema = new Schema({
-  estimate: {
-    comment: { type: String },
-  },
-  fixed_fee: {
-    comment: { type: String },
-  },
-  capped_fee: {
-    comment: { type: String },
-  },
-  hourly_rate_fee: {
-    comment: { type: String },
-  },
-  blended_rates: {
-    comment: { type: String },
-  },
-  contingent_fee: {
-    comment: { type: String },
-  },
-  abort_discount: {
-    comment: { type: String },
-  },
-  success_fee: {
-    comment: { type: String },
-  },
-  reverse_auction: {
-    comment: { type: String },
-  },
-  free_initial_advice: {
-    comment: { type: String },
-  },
-  retainer: {
-    comment: { type: String },
-  },
-  budget_for_project: {
-    amount: { type: Number },
-    comment: { type: String },
-  },
-  other: {
-    comment: { type: String },
-  },
+const commentSchema = new mongoose.Schema({
+  checked: { type: Boolean, required: true },
+  comment: { type: String, default: "" },
 });
 
-// Pricing Schema
-const PricingSchema = new Schema({
-  currency: { type: String, required: true },
-  model: ModelSchema,
+const budgetForProjectSchema = new mongoose.Schema({
+  checked: { type: Boolean, required: true },
+  amount: { type: Number, required: true },
+  comment: { type: String, default: "" },
 });
 
-// Expenses Schema
+const ifExpenseNotCoveredSchema = new mongoose.Schema({
+  percentage_of_total_fee: { type: Boolean, required: true },
+  included_service_fee: { type: Boolean, required: true },
+  admin_only: { type: Boolean, required: true },
+  other: { type: commentSchema, required: true },
+  travel_categories: {
+    type: new mongoose.Schema({
+      same_as_client: { type: Boolean, required: true },
+    }),
+    required: true,
+  },
+  travel_class: { type: String, required: true },
+  hotel: { type: String, required: true },
+});
+
+// const pricingSchema = new mongoose.Schema({
+//   pricing: {
+//     currency: { type: String, required: true },
+//     model: {
+//       estimate: { type: commentSchema, required: true },
+//       fixed_fee: { type: commentSchema, required: true },
+//       capped_fee: { type: commentSchema, required: true },
+//       hourly_rate_fee: { type: commentSchema, required: true },
+//       blended_rates: { type: commentSchema, required: true },
+//       contingent_fee: { type: commentSchema, required: true },
+//       abort_discount: { type: commentSchema, required: true },
+//       success_fee: { type: commentSchema, required: true },
+//       reverse_auction: { type: commentSchema, required: true },
+//       free_initial_advice: { type: commentSchema, required: true },
+//       retainer: { type: commentSchema, required: true },
+//       budget_for_project: { type: budgetForProjectSchema, required: true },
+//       other: { type: commentSchema, required: true },
+//     },
+//   },
+//   expenses: {
+//     if_expense_not_covered: { type: ifExpenseNotCoveredSchema, required: true },
+//   },
+//   taxes: {
+//     bidder_to_indicate: { type: commentSchema, required: true },
+//   },
+//   assumption_exclusion: {
+//     type: { type: String, required: true },
+//   },
+//   expected_completion_date_of_instruction: {
+//     checked: { type: Boolean, required: true },
+//     select_duration: { type: String, required: true },
+//     comment: { type: String, default: "" },
+//   },
+//   work_product_format: {
+//     checked: { type: Boolean, required: true },
+//     email: { type: Boolean, required: true },
+//     memo: { type: Boolean, required: true },
+//     power_point_slides: { type: Boolean, required: true },
+//     legal_opinion: { type: Boolean, required: true },
+//     legal_document_drafting: { type: Boolean, required: true },
+//     comment: { type: String, default: "" },
+//   },
+//   following_jurisdiction: {
+//     checked: { type: Boolean, required: true },
+//     country: { type: String, required: true },
+//     comment: { type: String, default: "" },
+//   },
+//   lsp_local_legal_counsel: { type: commentSchema, required: true },
+//   select_engage_local_legal_counsel: { type: commentSchema, required: true },
+//   tax_advice_excluded: { type: commentSchema, required: true },
+//   no_travel_expected: { type: commentSchema, required: true },
+//   other: { type: commentSchema, required: true },
+// });
+
 const ExpensesSchema = new Schema({
   if_expense_not_covered: {
-    percentage_of_total_fee: { type: Boolean },
-    included_service_fee: { type: Boolean },
-    admin_only: { type: Boolean },
+    percentage_of_total_fee: { type: Boolean, default: false },
+    included_service_fee: { type: Boolean, default: false },
+    admin_only: { type: Boolean, default: false },
     other: {
+      checked: { type: Boolean, default: false },
       comment: { type: String },
     },
     travel_categories: {
-      same_as_client: { type: Boolean },
+      same_as_client: { type: Boolean, default: false },
     },
     travel_class: {
       type: String,
@@ -1231,14 +766,13 @@ const ExpensesSchema = new Schema({
   },
 });
 
-// Taxes Schema
 const TaxesSchema = new Schema({
   bidder_to_indicate: {
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
 });
 
-// AssumptionExclusion Schema
 const AssumptionExclusionSchema = new Schema({
   type: {
     type: String,
@@ -1246,9 +780,8 @@ const AssumptionExclusionSchema = new Schema({
   },
 });
 
-// ExpectedCompletionDateOfInstruction Schema
 const ExpectedCompletionDateOfInstructionSchema = new Schema({
-  type: Boolean,
+  checked: { type: Boolean, default: false },
   select_duration: {
     type: String,
     enum: ["1-2", "2-4", "4-8", "8-12", "12-16", "16-24", "24-40", "40-48"],
@@ -1256,55 +789,140 @@ const ExpectedCompletionDateOfInstructionSchema = new Schema({
   comment: { type: String },
 });
 
-// WorkProductFormat Schema
 const WorkProductFormatSchema = new Schema({
-  type: Boolean,
-  email: { type: Boolean },
-  memo: { type: Boolean },
-  power_point_slides: { type: Boolean },
-  legal_opinion: { type: Boolean },
+  checked: { type: Boolean, default: false },
+  email: { type: Boolean, default: false },
+  memo: { type: Boolean, default: false },
+  power_point_slides: { type: Boolean, default: false },
+  legal_opinion: { type: Boolean, default: false },
   legal_document_drafting: {
     type: Boolean,
+    default: false,
   },
   comment: { type: String },
 });
 
-// FollowingJurisdiction Schema
 const FollowingJurisdictionSchema = new Schema({
-  type: Boolean,
+  checked: { type: Boolean, default: false },
   country: { type: String },
   comment: { type: String },
 });
 
-// pricing Main Schema
-const pricingMainSchema = new Schema({
-  pricing: PricingSchema,
-  expenses: ExpensesSchema,
-  taxes: TaxesSchema,
-  assumption_exclusion: AssumptionExclusionSchema,
-  expected_completion_date_of_instruction:
-    ExpectedCompletionDateOfInstructionSchema,
-  work_product_format: WorkProductFormatSchema,
-  following_jurisdiction: FollowingJurisdictionSchema,
+const pricingSchema = new Schema({
+  currency: { type: String, required: true },
+  model: {
+    estimate: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    fixed_fee: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    capped_fee: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    hourly_rate_fee: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    blended_rates: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    contingent_fee: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    abort_discount: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    success_fee: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    reverse_auction: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    free_initial_advice: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    retainer: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+    budget_for_project: {
+      checked: { type: Boolean, required: true },
+      amount: { type: Number, required: true },
+      comment: { type: String, default: "" },
+    },
+    other: {
+      checked: { type: Boolean, required: true },
+      comment: { type: String, default: "" },
+    },
+  },
+  expenses: {
+    if_expense_not_covered: {
+      percentage_of_total_fee: { type: Boolean },
+      included_service_fee: { type: Boolean },
+      admin_only: { type: Boolean },
+      other: {
+        checked: { type: Boolean },
+        comment: { type: String, default: "" },
+      },
+    },
+  },
+  taxes: {
+    bidder_to_indicate: {
+      checked: { type: Boolean },
+      comment: { type: String, default: "" },
+    },
+  },
+  assumption_exclusion: {
+    type: { type: String },
+  },
+  expected_completion_date_of_instruction: {
+    checked: { type: Boolean },
+    select_duration: { type: String },
+    comment: { type: String, default: "" },
+  },
+  work_product_format: {
+    checked: { type: Boolean },
+    email: { type: Boolean },
+    memo: { type: Boolean },
+    power_point_slides: { type: Boolean },
+    legal_opinion: { type: Boolean },
+    legal_document_drafting: { type: Boolean },
+    comment: { type: String, default: "" },
+  },
+  following_jurisdiction: {
+    checked: { type: Boolean },
+    country: { type: String },
+    comment: { type: String, default: "" },
+  },
   lsp_local_legal_counsel: {
-    type: Boolean,
-    comment: { type: String },
+    checked: { type: Boolean },
+    comment: { type: String, default: "" },
   },
   select_engage_local_legal_counsel: {
-    type: Boolean,
-    comment: { type: String },
+    checked: { type: Boolean },
+    comment: { type: String, default: "" },
   },
   tax_advice_excluded: {
-    type: Boolean,
-    comment: { type: String },
+    checked: { type: Boolean },
+    comment: { type: String, default: "" },
   },
   no_travel_expected: {
-    type: Boolean,
-    comment: { type: String },
+    checked: { type: Boolean },
+    comment: { type: String, default: "" },
   },
   other: {
-    type: Boolean,
-    comment: { type: String },
+    checked: { type: Boolean },
+    comment: { type: String, default: "" },
   },
 });
 
@@ -1315,60 +933,49 @@ const KeyTeamMemberSchema = new Schema({
   comment: { type: String },
 });
 
-// Biographies Schema
 const BiographiesSchema = new Schema({
-  type: Boolean,
-  with_picture: { type: Boolean },
-  not_more_dn_1_page: {
-    type: Boolean,
-  },
+  checked: { type: Boolean, default: false },
+  with_picture: { type: Boolean, default: false },
+  not_more_dn_1_page: { type: Boolean, default: false },
   comment: { type: String },
 });
 
-// DiversityEquityInclusion Schema
 const DiversityEquityInclusionSchema = new Schema({
-  type: Boolean,
+  checked: { type: Boolean, default: false },
   comment: { type: String },
-  team_lead_dei_requirement: { type: Boolean },
-  key_team_member: { type: Boolean },
+  team_lead_dei_requirement: { type: Boolean, default: false },
+  key_team_member: { type: Boolean, default: false },
   other: {
-    type: String,
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
 });
 
-// DisaggregationService Subschemas
 const TechnologySchema = new Schema({
   description: {
-    type: Boolean,
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
   other: {
-    type: Boolean,
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
 });
 
 const OutsourcingSchema = new Schema({
-  name_of_service: {
-    type: Boolean,
-  },
+  name_of_service: { type: Boolean, default: false },
   other: {
-    type: Boolean,
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
   expected_efficiency: {
-    type: Boolean,
-    comment: { type: String },
-  },
-  other: {
-    type: Boolean,
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
 });
 
 const DisaggregationServiceSchema = new Schema({
-  type: Boolean,
+  checked: { type: Boolean, default: false },
   technology: TechnologySchema,
   outsourcing: OutsourcingSchema,
 });
@@ -1392,17 +999,17 @@ const OtherKeyInformationSchema = new Schema({
   key_team_member: KeyTeamMemberSchema,
   biographies: BiographiesSchema,
   staffing_project_management: {
-    type: Boolean,
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
   diversity_equity_inclusion: DiversityEquityInclusionSchema,
   credential: {
-    type: Boolean,
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
   disaggregation_service: DisaggregationServiceSchema,
   what_your_usp: {
-    type: Boolean,
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
   additional_information: {
@@ -1410,18 +1017,16 @@ const OtherKeyInformationSchema = new Schema({
     default: {},
   },
   presentation_of_fee_proposal: {
-    type: Boolean,
-    organizing_meeting: {
-      type: Boolean,
-    },
+    checked: { type: Boolean, default: false },
+    organizing_meeting: { type: Boolean, default: false },
     comment: { type: String },
   },
   video: {
-    type: Boolean,
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
   other: {
-    type: String,
+    checked: { type: Boolean, default: false },
     comment: { type: String },
   },
 });
@@ -1430,8 +1035,8 @@ const OtherKeyInformationSchema = new Schema({
 const rfpSchema = new Schema({
   company_conflict_check: CompanyConflictCheckSchema,
   Preliminary_information: [PreliminaryInformationSchema],
-  scope_of_work: [MainScopeOfWorkSchema],
-  pricing: pricingMainSchema,
+  scope_of_work: mainScopeOfWorkSchema,
+  pricing: pricingSchema,
   other_key_information: OtherKeyInformationSchema,
 });
 
